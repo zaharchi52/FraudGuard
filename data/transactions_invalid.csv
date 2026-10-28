@@ -1,0 +1,5 @@
+transaction_id,client_id,timestamp,amount,currency,country,merchant_category,device_id
+T9001,C001,2026-10-28T12:00:00Z,-10.00,EUR,DE,groceries,D001
+T9002,C001,not-a-date,25.00,EUR,DE,groceries,D001
+T9003,C001,2026-10-28T12:03:00Z,25.00,EUR,,groceries,D001
+T9004,C001,2026-10-28T12:04:00Z,25.00,EUR,DE,groceries,D001

@@ -1,0 +1,28 @@
+# Build output
+build/
+cmake-build-*/
+.gradle/
+build.gradle.kts.tmp
+out/
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+*.class
+*.jar
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Generated reports (keep .gitkeep and optionally committed example outputs)
+reports/*.csv
+!reports/.gitkeep
+
+# Local logs
+*.log
