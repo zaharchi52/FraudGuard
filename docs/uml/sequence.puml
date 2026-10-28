@@ -1,0 +1,56 @@
+@startuml FraudGuard_Sequence
+hide footbox
+skinparam shadowing false
+autonumber
+
+actor "Аналитик" as User
+participant "Application" as App
+participant "CsvReader" as Csv
+participant "TransactionValidator" as Validator
+participant "ProfileBuilder" as Profiles
+participant "FraudDetectionService" as Service
+participant "BatchContext" as Context
+participant "RuleEngine" as Rules
+participant "RiskScorer" as Scorer
+participant "DecisionEngine" as Decisions
+participant "CsvReportWriter" as Writer
+
+User -> App: Запуск с путями к CSV
+App -> Csv: read(history.csv)
+Csv --> App: записи истории + номера строк
+App -> Validator: validateHistory(records)
+Validator --> App: валидная история + ошибки
+App -> Profiles: build(validHistory)
+Profiles --> App: профили клиентов/валют
+
+App -> Csv: read(transactions.csv)
+Csv --> App: новые записи + номера строк
+App -> Validator: validateIncoming(records, historyIds)
+Validator --> App: валидные транзакции + ошибки
+App -> Context: build(validIncoming)
+Context --> App: контекст временных окон
+App -> Service: process(validIncoming, profiles, context)
+
+loop Для каждой валидной новой транзакции в исходном порядке
+  Service -> Profiles: find(clientId, currency)
+  Profiles --> Service: профиль или отсутствие
+  Service -> Rules: evaluate(tx, profile, context)
+  Rules --> Service: список RiskFactor
+  Service -> Scorer: score(factors)
+  Scorer --> Service: riskScore 0..100
+  Service -> Decisions: decide(riskScore)
+  Decisions --> Service: APPROVE / REVIEW / BLOCK
+  Service -> Service: собрать TransactionResult
+end
+
+Service --> App: BatchReport(results, errors)
+App -> Writer: write(results.csv, alerts.csv, errors.csv)
+Writer --> App: отчёты записаны
+App --> User: сводка: обработано, ошибки, решения, алерты
+
+note over Context,Rules
+HIGH_VELOCITY использует все валидные новые попытки.
+Расчёт не зависит от порядка строк CSV.
+Профильные правила включаются только при READY.
+end note
+@enduml
