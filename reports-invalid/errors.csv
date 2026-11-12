@@ -1,0 +1,4 @@
+source_file,line_number,transaction_id,error_code,message
+transactions_invalid.csv,2,T9001,INVALID_AMOUNT,Сумма должна быть конечным числом строго больше нуля
+transactions_invalid.csv,3,T9002,INVALID_TIMESTAMP,Дата должна соответствовать ISO 8601 и содержать часовой пояс
+transactions_invalid.csv,4,T9003,REQUIRED_FIELD_EMPTY,Одно или несколько обязательных полей пусты

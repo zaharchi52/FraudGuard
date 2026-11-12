@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "FraudGuard: Run Kotlin GUI",
+      "type": "shell",
+      "command": "gradle",
+      "args": ["run"],
+      "options": { "cwd": "${workspaceFolder}/kotlin" },
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "FraudGuard: Test Kotlin engine",
+      "type": "shell",
+      "command": "gradle",
+      "args": ["test"],
+      "options": { "cwd": "${workspaceFolder}/kotlin" },
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    }
+  ]
+}

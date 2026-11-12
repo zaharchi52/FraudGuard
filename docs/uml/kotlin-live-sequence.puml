@@ -1,0 +1,32 @@
+@startuml
+actor "Оператор" as Operator
+participant "FraudGuardFrame\n(Swing UI)" as UI
+participant "FraudGuardService" as Service
+participant "CsvCodec" as CSV
+participant "ScoringEngine" as Engine
+participant "ReportWriter" as Reports
+
+Operator -> UI: Нажать «Старт ленты»
+UI -> Service: analyze(transactions, history, output)
+Service -> CSV: loadTransactions(history)
+CSV --> Service: history + validation errors
+Service -> CSV: loadTransactions(transactions)
+CSV --> Service: valid transactions + errors
+Service -> Engine: scoreAll(history, transactions)
+Engine --> Service: scored results
+Service -> Reports: writeBatchReports(results, errors)
+Reports --> Service: отчёты записаны
+Service --> UI: AnalysisResult
+
+loop Для каждой строки с заданным интервалом
+  UI -> UI: Добавить запись в живую ленту
+  alt decision = REVIEW
+    UI -> UI: Добавить запись в очередь проверки
+    Operator -> UI: Одобрить / Отклонить
+    UI -> Reports: writeOperatorDecisions(rows)
+    Reports --> UI: журнал сохранён
+  else decision = APPROVE или BLOCK
+    UI -> UI: Отобразить авто-статус
+  end
+end
+@enduml
