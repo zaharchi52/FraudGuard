@@ -26,3 +26,13 @@ reports/*.csv
 
 # Local logs
 *.log
+
+# Kotlin generated reports
+reports-kotlin/*.csv
+reports-kotlin/**/*.csv
+
+# Keep the team VS Code task definitions while ignoring user-specific workspace files
+.vscode/
+!.vscode/
+.vscode/*
+!.vscode/tasks.json
