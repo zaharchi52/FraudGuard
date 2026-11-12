@@ -1,6 +1,7 @@
 @echo off
 setlocal
 cd /d "%~dp0"
+<<<<<<< HEAD
 if exist gradlew.bat (
   call gradlew.bat run
 ) else (
@@ -13,4 +14,15 @@ if exist gradlew.bat (
   )
   gradle run
 )
+=======
+where gradle >nul 2>nul
+if errorlevel 1 (
+  echo Gradle was not found in PATH.
+  echo Install Gradle and a JDK 17 or newer, then reopen VS Code.
+  echo See README.md in this folder for instructions.
+  pause
+  exit /b 1
+)
+gradle run
+>>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
 if errorlevel 1 pause

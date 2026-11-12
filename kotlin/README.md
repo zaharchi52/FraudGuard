@@ -1,21 +1,36 @@
 # FraudGuard Kotlin: интерактивная версия
 
+<<<<<<< HEAD
 Kotlin-порт антифрод-скоринга с настольным интерфейсом на Swing и FlatLaf (светлая современная тема, KPI-карточки, цветные статусы и таблицы). Все операции — учебная симуляция на синтетических CSV-данных; приложение не подключается к платёжным системам.
+=======
+Kotlin-порт антифрод-скоринга с настольным интерфейсом на Swing. Все операции — учебная симуляция на синтетических CSV-данных; приложение не подключается к платёжным системам.
+>>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
 
 ## Требования
 
 - JDK 17 или новее.
+<<<<<<< HEAD
 - Gradle 8.10–8.12.1 через `gradlew.bat` (предпочтительно) или в `PATH` для ручной установки.
+=======
+- Gradle 8.10–8.12.1 в `PATH`.
+>>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
 - При первом запуске нужен доступ к Maven Central, чтобы Gradle загрузил Kotlin-плагин и JUnit.
 
 Проверьте в терминале VS Code:
 
 ```powershell
 java -version
+<<<<<<< HEAD
 .\gradlew.bat --version
 ```
 
 Если Wrapper ещё не создан, создайте его командой `gradle wrapper --gradle-version 8.12.1`. Для JDK используйте Temurin 17 или новее и полностью перезапустите VS Code после установки. После установки откройте проект именно из корневой папки `FraudGuard`.
+=======
+gradle -version
+```
+
+Если команды не распознаются, установите JDK и Gradle, затем полностью перезапустите VS Code. После установки откройте проект именно из корневой папки `FraudGuard`.
+>>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
 
 ## Запуск интерфейса
 
@@ -23,18 +38,28 @@ java -version
 
 ```powershell
 Set-Location .\kotlin
+<<<<<<< HEAD
 .\gradlew.bat run
 ```
 
 Если Gradle Wrapper ещё не создан, один раз выполните `gradle wrapper --gradle-version 8.12.1`, затем используйте `gradlew.bat`.
 
+=======
+gradle run
+```
+
+>>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
 Или двойным щелчком запустите `kotlin\run.bat` из Проводника. В VS Code доступна задача **FraudGuard: Run Kotlin GUI** через `Terminal → Run Task`.
 
 ## Проверка Kotlin
 
 ```powershell
 Set-Location .\kotlin
+<<<<<<< HEAD
 .\gradlew.bat test
+=======
+gradle test
+>>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
 ```
 
 Также доступна задача VS Code **FraudGuard: Test Kotlin engine**. Тест `Kotlin port matches C++ expected results fixture` сравнивает баллы, решения, факторы и статус профиля с `data/expected-results.csv`.

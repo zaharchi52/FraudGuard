@@ -1,6 +1,7 @@
 @echo off
 setlocal
 cd /d "%~dp0"
+<<<<<<< HEAD
 if exist gradlew.bat (
   call gradlew.bat test
 ) else (
@@ -13,4 +14,13 @@ if exist gradlew.bat (
   )
   gradle test
 )
+=======
+where gradle >nul 2>nul
+if errorlevel 1 (
+  echo Gradle was not found in PATH. Install Gradle and a JDK 17 or newer.
+  pause
+  exit /b 1
+)
+gradle test
+>>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
 if errorlevel 1 pause

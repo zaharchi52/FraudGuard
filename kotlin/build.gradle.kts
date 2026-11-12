@@ -19,7 +19,10 @@ application {
 }
 
 dependencies {
+<<<<<<< HEAD
     implementation("com.formdev:flatlaf:3.7.2")
+=======
+>>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
     testImplementation(kotlin("test-junit5"))
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.11.4")
 }

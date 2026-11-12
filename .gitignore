@@ -36,6 +36,7 @@ reports-kotlin/**/*.csv
 !.vscode/
 .vscode/*
 !.vscode/tasks.json
+<<<<<<< HEAD
 
 # Dart / Flutter generated files
 .dart_tool/
@@ -47,3 +48,5 @@ dart/.dart_tool/
 dart/build/
 dart/.flutter-plugins
 dart/.flutter-plugins-dependencies
+=======
+>>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd

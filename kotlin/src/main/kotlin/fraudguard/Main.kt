@@ -1,12 +1,17 @@
 package fraudguard
 
+<<<<<<< HEAD
 import com.formdev.flatlaf.FlatLightLaf
 import fraudguard.ui.FraudGuardFrame
 import java.awt.Color
+=======
+import fraudguard.ui.FraudGuardFrame
+>>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
 import javax.swing.SwingUtilities
 import javax.swing.UIManager
 
 fun main() {
+<<<<<<< HEAD
     runCatching { FlatLightLaf.setup() }
     UIManager.put("Component.arc", 12)
     UIManager.put("Button.arc", 10)
@@ -23,6 +28,9 @@ fun main() {
     UIManager.put("Component.focusColor", Color(0x72, 0x8D, 0xFF))
     UIManager.put("Panel.background", Color(0xF5, 0xF7, 0xFB))
 
+=======
+    runCatching { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()) }
+>>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
     SwingUtilities.invokeLater {
         FraudGuardFrame().isVisible = true
     }

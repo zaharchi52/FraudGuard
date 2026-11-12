@@ -18,6 +18,9 @@
 
 - [`kotlin-class-diagram.puml`](kotlin-class-diagram.puml) — классы Kotlin-порта, GUI, сервисов и отчётов.
 - [`kotlin-live-sequence.puml`](kotlin-live-sequence.puml) — загрузка CSV, скоринг, имитация ленты и принятие решения оператором.
+<<<<<<< HEAD
 
 - [`dart-class-diagram.puml`](dart-class-diagram.puml) — классы Dart-реализации и Flutter Web UI.
 - [`dart-live-sequence.puml`](dart-live-sequence.puml) — загрузка файлов, симуляция потока, ручное решение и экспорт CSV в браузере.
+=======
+>>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
