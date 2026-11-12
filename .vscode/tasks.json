@@ -1,0 +1,122 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "FraudGuard: Run Kotlin GUI",
+      "type": "shell",
+      "command": ".\\gradlew.bat",
+      "args": [
+        "run"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}\\kotlin"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "FraudGuard: Test Kotlin engine",
+      "type": "shell",
+      "command": ".\\gradlew.bat",
+      "args": [
+        "test"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}\\kotlin"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "FraudGuard Dart: Get Packages",
+      "type": "shell",
+      "command": "flutter",
+      "args": [
+        "pub",
+        "get"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}\\dart"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "FraudGuard Dart: Run Web (Chrome)",
+      "type": "shell",
+      "command": "flutter",
+      "args": [
+        "run",
+        "-d",
+        "chrome"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}\\dart"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "FraudGuard Dart: Test",
+      "type": "shell",
+      "command": "flutter",
+      "args": [
+        "test"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}\\dart"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "FraudGuard Dart: Analyze",
+      "type": "shell",
+      "command": "flutter",
+      "args": [
+        "analyze"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}\\dart"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "FraudGuard Dart: Build Web",
+      "type": "shell",
+      "command": "flutter",
+      "args": [
+        "build",
+        "web",
+        "--release"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}\\dart"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    }
+  ]
+}

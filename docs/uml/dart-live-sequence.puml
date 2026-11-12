@@ -1,0 +1,34 @@
+@startuml FraudGuardDartLiveSequence
+actor Operator
+participant "Flutter Web UI" as UI
+participant "FraudGuardService" as Service
+participant "CsvCodec" as CSV
+participant "ScoringEngine" as Engine
+participant "Browser download" as Download
+
+Operator -> UI: Выбрать transactions.csv и history.csv
+UI -> CSV: parse / validate history + transactions
+CSV --> UI: валидные операции + ошибки
+Operator -> UI: Нажать «Запустить поток»
+UI -> Service: analyze(csv contents)
+Service -> CSV: loadTransactions()
+CSV --> Service: history/current rows
+Service -> Engine: scoreAll(history, current)
+Engine --> Service: scored transactions
+Service --> UI: AnalysisBatch
+loop Каждые N миллисекунд
+  UI -> UI: Показать следующую транзакцию
+  alt APPROVE
+    UI -> UI: AUTO_APPROVED
+  else BLOCK
+    UI -> UI: AUTO_BLOCKED
+  else REVIEW
+    UI -> UI: Добавить в PENDING_REVIEW
+    Operator -> UI: Одобрить / отклонить
+    UI -> UI: Записать отдельное решение оператора
+  end
+end
+Operator -> UI: Экспорт отчёта
+UI -> Download: Скачать CSV
+Download --> Operator: Файл отчёта
+@enduml

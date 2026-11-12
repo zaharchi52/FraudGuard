@@ -13,3 +13,11 @@
 3. Для отчёта экспортируйте диаграмму в SVG или PNG; исходник `.puml` сохраните в репозитории.
 
 При редактировании сверяйтесь с `../requirements.md`: правила, статусы профиля, пороги и выходные файлы должны совпадать.
+
+## Дополнительные диаграммы этапа 4
+
+- [`kotlin-class-diagram.puml`](kotlin-class-diagram.puml) — классы Kotlin-порта, GUI, сервисов и отчётов.
+- [`kotlin-live-sequence.puml`](kotlin-live-sequence.puml) — загрузка CSV, скоринг, имитация ленты и принятие решения оператором.
+
+- [`dart-class-diagram.puml`](dart-class-diagram.puml) — классы Dart-реализации и Flutter Web UI.
+- [`dart-live-sequence.puml`](dart-live-sequence.puml) — загрузка файлов, симуляция потока, ручное решение и экспорт CSV в браузере.

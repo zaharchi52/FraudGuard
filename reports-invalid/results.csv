@@ -1,0 +1,2 @@
+transaction_id,client_id,timestamp,amount,currency,risk_score,decision,risk_factors,profile_status,processing_status
+T9004,C001,2026-10-28T12:04:00Z,25.00,EUR,0,APPROVE,,READY,OK

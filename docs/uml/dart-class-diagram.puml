@@ -1,0 +1,76 @@
+@startuml FraudGuardDartClass
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+package "Dart domain" {
+  class Transaction {
+    +transactionId: String
+    +clientId: String
+    +timestamp: DateTime
+    +amount: Decimal
+    +currency: String
+    +country: String
+    +merchantCategory: String
+    +deviceId: String
+  }
+  class ClientProfile {
+    +status: ProfileStatus
+    +amountsSorted: List<Decimal>
+    +p95Amount: Decimal?
+    +countries: Set<String>
+    +devices: Set<String>
+    +categories: Set<String>
+  }
+  class RiskFactor {
+    +code: String
+    +points: int
+  }
+  class ScoredTransaction {
+    +riskScore: int
+    +decision: String
+    +profileStatus: ProfileStatus
+    +factors: List<RiskFactor>
+  }
+  class LiveTransactionRow {
+    +workflowStatus: String
+    +reviewedAt: String
+  }
+}
+
+package "Services" {
+  class CsvCodec {
+    +parseText(input): CsvParseResult
+    +loadTransactions(...): LoadedTransactions
+    +encodeRow(values): String
+  }
+  class ScoringEngine {
+    +buildProfile(...): ClientProfile
+    +evaluateRisk(...): List<RiskFactor>
+    +scoreAll(...): List<ScoredTransaction>
+  }
+  class FraudGuardService {
+    +analyze(...): AnalysisBatch
+  }
+}
+
+package "Flutter Web UI" {
+  class FraudGuardDashboard {
+    +pickTransactions()
+    +pickHistory()
+    +startStream()
+    +decide()
+    +exportReport()
+  }
+}
+
+CsvCodec ..> Transaction
+FraudGuardService --> CsvCodec
+FraudGuardService --> ScoringEngine
+ScoringEngine --> ClientProfile
+ScoringEngine --> ScoredTransaction
+ScoredTransaction --> Transaction
+ScoredTransaction o-- RiskFactor
+LiveTransactionRow --> ScoredTransaction
+FraudGuardDashboard --> FraudGuardService
+FraudGuardDashboard o-- LiveTransactionRow
+@enduml

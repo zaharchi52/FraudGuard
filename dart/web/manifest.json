@@ -1,0 +1,9 @@
+{
+  "name": "FraudGuard Risk Operations",
+  "short_name": "FraudGuard",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#F5F7FB",
+  "theme_color": "#365CF5",
+  "description": "Демонстрационный анти-фрод скоринг-движок"
+}

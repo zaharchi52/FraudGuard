@@ -1,0 +1,65 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+package "UI" {
+  class FraudGuardFrame {
+    - analysis: AnalysisResult?
+    - liveRows: MutableList<LiveTransactionRow>
+    - nextIndex: Int
+    + startSimulation()
+    + togglePause()
+    + decideSelectedReview(approve: Boolean)
+    + runCppBatch()
+  }
+}
+package "Service / IO" {
+  object FraudGuardService {
+    + analyze(transactionsPath, historyPath, outputDirectory): AnalysisResult
+  }
+  object CsvCodec {
+    + loadTransactions(path, seenIds): LoadedTransactions
+    + encodeRow(fields): String
+  }
+  object ReportWriter {
+    + writeBatchReports(outputDirectory, results, errors)
+    + writeOperatorDecisions(outputDirectory, rows)
+  }
+}
+package "Engine" {
+  object ScoringEngine {
+    + buildProfile(history, clientId, currency): ClientProfile
+    + evaluateRisk(transaction, profile, velocityCount): List<RiskFactor>
+    + scoreAll(history, currentTransactions): List<ScoredTransaction>
+    + decisionForScore(score): String
+  }
+}
+package "Model" {
+  class Transaction
+  class ClientProfile
+  class RiskFactor
+  class ScoredTransaction
+  class ProcessingError
+  class AnalysisResult
+  class LiveTransactionRow {
+    + workflowStatus: String
+    + reviewedAt: String
+  }
+}
+
+FraudGuardFrame --> FraudGuardService
+FraudGuardFrame --> ReportWriter
+FraudGuardFrame o-- LiveTransactionRow
+FraudGuardService --> CsvCodec
+FraudGuardService --> ScoringEngine
+FraudGuardService --> ReportWriter
+CsvCodec ..> Transaction
+ScoringEngine ..> Transaction
+ScoringEngine ..> ClientProfile
+ScoringEngine ..> RiskFactor
+ScoringEngine ..> ScoredTransaction
+ReportWriter ..> ScoredTransaction
+ReportWriter ..> ProcessingError
+LiveTransactionRow o-- ScoredTransaction
+ScoredTransaction o-- Transaction
+ScoredTransaction o-- RiskFactor
+@enduml
