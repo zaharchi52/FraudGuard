@@ -1,6 +1,8 @@
 # FraudGuard — анти-фрод скоринг-движок
 
 Учебный проект: C++17-движок пакетного анализа, Kotlin/Swing desktop-приложение и Dart/Flutter Web-интерфейс с имитацией живой ленты и ручной очередью проверки. Все данные синтетические; подключение к реальным платёжным системам отсутствует.
+Учебный проект: C++17-движок пакетного анализа и Kotlin/Swing-приложение с имитацией живой ленты и ручной очередью проверки. Все данные синтетические; подключение к реальным платёжным системам отсутствует.
+
 
 ## Возможности
 
@@ -16,6 +18,9 @@
 
 - `data/expected-results.csv` — исходный golden-набор (9 операций).
 - `data/conformance/` — расширенный общий golden-набор (15 операций) для сверки C++, Kotlin и Dart.
+- Kotlin-порт для сопоставления с C++.
+- Swing GUI: имитированная лента, пауза, очередь `REVIEW`, действия оператора и журнал.
+- Кнопка запуска C++ batch-движка из окна приложения.
 
 ## Документы
 
@@ -27,6 +32,7 @@
 - [`docs/cpp-implementation.md`](docs/cpp-implementation.md) — реализация C++.
 - [`docs/kotlin-implementation.md`](docs/kotlin-implementation.md) — Kotlin, GUI и операторская очередь.
 - [`docs/dart-implementation.md`](docs/dart-implementation.md) — Dart/Flutter Web, CSV, скоринг и браузерные ограничения.
+<<<<<<< HEAD
 - [`docs/test-plan.md`](docs/test-plan.md) — план и стратегия тестирования.
 - [`docs/testing-frameworks.md`](docs/testing-frameworks.md) — чем отличаются Google Test, CTest, JUnit 5 и Flutter Test и как запускать их.
 - [`docs/cross-language-conformance.md`](docs/cross-language-conformance.md) — сверка C++ / Kotlin / Dart по общим эталонным данным.
@@ -53,6 +59,8 @@ ctest --test-dir cpp/build -C Release --output-on-failure
 ```powershell
 Set-Location .\kotlin
 .\gradlew.bat run
+=======
+gradle run
 ```
 
 Запуск тестов Kotlin:
@@ -98,6 +106,9 @@ flutter build web --release
 
 Готовая сборка находится в `dart/build/web`. В VS Code доступны задачи `FraudGuard Dart: Get Packages`, `Run Web (Chrome)`, `Test`, `Analyze` и `Build Web`. Подробнее — [`dart/README.md`](dart/README.md). Браузерная версия обрабатывает выбранные файлы локально и не может запускать пользовательский C++ `.exe`; для этого используется Kotlin Desktop или CLI.
 
+
+Также доступны задачи VS Code из `Terminal → Run Task`: `FraudGuard: Run Kotlin GUI` и `FraudGuard: Test Kotlin engine`. Подробнее — [`kotlin/README.md`](kotlin/README.md).
+
 ## Выходные файлы
 
 - `reports/results.csv`, `alerts.csv`, `errors.csv` — C++ batch-отчёты.
@@ -117,4 +128,6 @@ flutter build web --release
 - [x] Этап 3: C++17-ядро и отчёты.
 - [x] Этап 4: Kotlin-порт, Swing GUI, Dart-порт и Flutter Web UI.
 - [~] Этап 5: подготовлены расширенные тесты, conformance fixtures, ручные сценарии и отчёт о дефектах; требуется локальный полный прогон Gradle/Flutter и GUI на целевой Windows-машине.
-- [ ] Этап 6: PR/история Git, финальная документация и презентация.
+- [x] Этап 5: расширенное тестирование, граничные случаи и отчёт о дефектах.
+- [x] Этап 6: PR/история Git, финальная документация и презентация.
+
