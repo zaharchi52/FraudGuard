@@ -45,7 +45,6 @@ ctest --test-dir cpp/build -C Release --output-on-failure
 ```powershell
 Set-Location .\kotlin
 .\gradlew.bat run
-=======
 gradle run
 ```
 
