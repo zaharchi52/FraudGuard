@@ -24,8 +24,8 @@ class ScoringEngine {
     final status = matching.isEmpty
         ? ProfileStatus.coldStart
         : matching.length < minHistorySize
-            ? ProfileStatus.limitedHistory
-            : ProfileStatus.ready;
+        ? ProfileStatus.limitedHistory
+        : ProfileStatus.ready;
     final amounts = matching.map((tx) => tx.amount).toList()..sort();
     final p95 = status == ProfileStatus.ready
         ? _percentile95NearestRank(amounts)
@@ -107,33 +107,41 @@ class ScoringEngine {
   ) {
     final timesByClient = <String, List<DateTime>>{};
     for (final transaction in currentTransactions) {
-      timesByClient.putIfAbsent(transaction.clientId, () => <DateTime>[])
-        ..add(transaction.timestamp);
+      timesByClient
+          .putIfAbsent(transaction.clientId, () => <DateTime>[])
+          .add(transaction.timestamp);
     }
     for (final times in timesByClient.values) {
       times.sort();
     }
 
-    return currentTransactions.map((transaction) {
-      final profile = buildProfile(
-        history,
-        transaction.clientId,
-        transaction.currency,
-      );
-      final currentTime = transaction.timestamp;
-      final lowerBound = currentTime.subtract(velocityWindow);
-      final velocityCount = (timesByClient[transaction.clientId] ?? const <DateTime>[])
-          .where((time) => !time.isBefore(lowerBound) && !time.isAfter(currentTime))
-          .length;
-      final factors = evaluateRisk(transaction, profile, velocityCount);
-      final score = scoreForFactors(factors);
-      return ScoredTransaction(
-        transaction: transaction,
-        riskScore: score,
-        decision: decisionForScore(score),
-        profileStatus: profile.status,
-        factors: factors,
-      );
-    }).toList(growable: false);
+    return currentTransactions
+        .map((transaction) {
+          final profile = buildProfile(
+            history,
+            transaction.clientId,
+            transaction.currency,
+          );
+          final currentTime = transaction.timestamp;
+          final lowerBound = currentTime.subtract(velocityWindow);
+          final velocityCount =
+              (timesByClient[transaction.clientId] ?? const <DateTime>[])
+                  .where(
+                    (time) =>
+                        !time.isBefore(lowerBound) &&
+                        !time.isAfter(currentTime),
+                  )
+                  .length;
+          final factors = evaluateRisk(transaction, profile, velocityCount);
+          final score = scoreForFactors(factors);
+          return ScoredTransaction(
+            transaction: transaction,
+            riskScore: score,
+            decision: decisionForScore(score),
+            profileStatus: profile.status,
+            factors: factors,
+          );
+        })
+        .toList(growable: false);
   }
 }

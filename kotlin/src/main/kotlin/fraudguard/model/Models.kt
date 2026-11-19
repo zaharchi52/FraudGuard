@@ -98,4 +98,12 @@ data class LiveTransactionRow(
     val scored: ScoredTransaction,
     var workflowStatus: String,
     var reviewedAt: String = ""
-)
+) {
+    /** Applies an operator decision once, and only to a transaction awaiting review. */
+    fun resolveReview(approve: Boolean, timestamp: String): Boolean {
+        if (workflowStatus != "PENDING_REVIEW") return false
+        workflowStatus = if (approve) "APPROVED_BY_OPERATOR" else "REJECTED_BY_OPERATOR"
+        reviewedAt = timestamp
+        return true
+    }
+}

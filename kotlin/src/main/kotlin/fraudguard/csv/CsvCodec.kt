@@ -33,6 +33,7 @@ object CsvCodec {
         val field = StringBuilder()
         var inQuotes = false
         var fieldWasQuoted = false
+        var quoteClosed = false
         var lineNumber = 1
         var recordStartLine = 1
         var i = 0
@@ -41,6 +42,7 @@ object CsvCodec {
             fields += field.toString()
             field.setLength(0)
             fieldWasQuoted = false
+            quoteClosed = false
         }
         fun finishRecord() {
             finishField()
@@ -61,6 +63,7 @@ object CsvCodec {
                             i++
                         } else {
                             inQuotes = false
+                            quoteClosed = true
                         }
                     }
                     '\n' -> {
@@ -70,6 +73,20 @@ object CsvCodec {
                     else -> field.append(ch)
                 }
             } else {
+                if (quoteClosed) {
+                    when (ch) {
+                        ',' -> finishField()
+                        '\n' -> {
+                            finishRecord()
+                            lineNumber++
+                            recordStartLine = lineNumber
+                        }
+                        ' ', '\t' -> Unit // Ignore whitespace after a closing quote, as C++ does.
+                        else -> return CsvReadResult(emptyList(), "После закрывающей кавычки ожидались разделитель или конец строки", lineNumber)
+                    }
+                    i++
+                    continue
+                }
                 when (ch) {
                     ',' -> finishField()
                     '\n' -> {

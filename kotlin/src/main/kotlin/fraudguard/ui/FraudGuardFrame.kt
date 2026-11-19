@@ -8,12 +8,9 @@ import fraudguard.model.ScoredTransaction
 import fraudguard.service.FraudGuardService
 import fraudguard.service.ProjectPaths
 import java.awt.BorderLayout
-<<<<<<< HEAD
 import java.awt.Color
 import java.awt.Component
 import java.awt.Font
-=======
->>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
 import java.awt.Desktop
 import java.awt.Dimension
 import java.awt.FlowLayout
@@ -23,10 +20,7 @@ import java.nio.file.Path
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import javax.swing.BorderFactory
-<<<<<<< HEAD
 import javax.swing.ListSelectionModel
-=======
->>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
 import javax.swing.JButton
 import javax.swing.JFileChooser
 import javax.swing.JFrame
@@ -45,12 +39,9 @@ import javax.swing.SwingWorker
 import javax.swing.Timer
 import javax.swing.UIManager
 import javax.swing.table.DefaultTableModel
-<<<<<<< HEAD
 import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.border.EmptyBorder
 import javax.swing.border.LineBorder
-=======
->>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
 
 class FraudGuardFrame : JFrame("FraudGuard — анти-фрод мониторинг") {
     private val projectRoot = ProjectPaths.findProjectRoot()
@@ -89,25 +80,17 @@ class FraudGuardFrame : JFrame("FraudGuard — анти-фрод монитор�
 
     init {
         defaultCloseOperation = EXIT_ON_CLOSE
-<<<<<<< HEAD
         minimumSize = Dimension(1120, 720)
         size = Dimension(1400, 900)
         setLocationRelativeTo(null)
         buildUi()
         polishUi()
-=======
-        minimumSize = Dimension(1050, 700)
-        size = Dimension(1320, 850)
-        setLocationRelativeTo(null)
-        buildUi()
->>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
         installActions()
         appendLog("FraudGuard запущен в демонстрационном режиме. Все транзакции синтетические.")
         appendLog("Корень проекта: $projectRoot")
     }
 
     private fun buildUi() {
-<<<<<<< HEAD
         layout = BorderLayout(14, 14)
         background = Color(0xF5, 0xF7, 0xFB)
         (rootPane as javax.swing.JComponent).border = BorderFactory.createEmptyBorder(16, 18, 16, 18)
@@ -147,46 +130,21 @@ class FraudGuardFrame : JFrame("FraudGuard — анти-фрод монитор�
             isOpaque = true
             background = Color.WHITE
         }
-=======
-        layout = BorderLayout(8, 8)
-        (rootPane as javax.swing.JComponent).border = BorderFactory.createEmptyBorder(10, 10, 10, 10)
-
-        val header = JPanel(BorderLayout(8, 6))
-        val title = JLabel("FraudGuard  |  Анти-фрод скоринг-движок")
-        title.font = title.font.deriveFont(22f)
-        val subtitle = JLabel("Демо-поток транзакций · ручная проверка · пакетный запуск C++")
-        subtitle.horizontalAlignment = SwingConstants.RIGHT
-        val titleRow = JPanel(BorderLayout())
-        titleRow.add(title, BorderLayout.WEST)
-        titleRow.add(subtitle, BorderLayout.EAST)
-        header.add(titleRow, BorderLayout.NORTH)
-
-        val filePanel = JPanel(GridLayout(3, 1, 4, 4))
-        filePanel.border = BorderFactory.createTitledBorder("Источники данных и отчёты")
->>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
         filePanel.add(pathRow("Транзакции", transactionsField, "Выбрать CSV") { chooseFile(transactionsField) })
         filePanel.add(pathRow("История", historyField, "Выбрать CSV") { chooseOptionalHistory() })
         filePanel.add(pathRow("Папка отчётов", outputField, "Выбрать папку") { chooseDirectory(outputField) })
         header.add(filePanel, BorderLayout.CENTER)
 
-<<<<<<< HEAD
         val controls = JPanel(FlowLayout(FlowLayout.LEFT, 9, 3)).apply {
             isOpaque = true
             background = Color.WHITE
             border = BorderFactory.createCompoundBorder(LineBorder(Color(0xE3, 0xE9, 0xF2), 1, true), EmptyBorder(7, 9, 7, 9))
         }
-=======
-        val controls = JPanel(FlowLayout(FlowLayout.LEFT, 8, 4))
->>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
         controls.add(startButton)
         controls.add(pauseButton)
         controls.add(resetButton)
         controls.add(JLabel("Интервал (мс):"))
-<<<<<<< HEAD
         intervalSpinner.preferredSize = Dimension(88, intervalSpinner.preferredSize.height)
-=======
-        intervalSpinner.preferredSize = Dimension(85, intervalSpinner.preferredSize.height)
->>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
         controls.add(intervalSpinner)
         controls.add(cppButton)
         controls.add(JLabel("  "))
@@ -194,16 +152,11 @@ class FraudGuardFrame : JFrame("FraudGuard — анти-фрод монитор�
         header.add(controls, BorderLayout.SOUTH)
         add(header, BorderLayout.NORTH)
 
-<<<<<<< HEAD
         val metrics = JPanel(FlowLayout(FlowLayout.LEFT, 10, 7)).apply { isOpaque = false }
-=======
-        val metrics = JPanel(FlowLayout(FlowLayout.LEFT, 18, 4))
->>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
         metrics.add(processedLabel)
         metrics.add(reviewLabel)
         metrics.add(blockedLabel)
 
-<<<<<<< HEAD
         val feedPanel = JPanel(BorderLayout(8, 8)).apply {
             isOpaque = true
             background = Color.WHITE
@@ -223,23 +176,11 @@ class FraudGuardFrame : JFrame("FraudGuard — анти-фрод монитор�
         }
         reviewPanel.add(JScrollPane(reviewTable).apply { border = BorderFactory.createEmptyBorder() }, BorderLayout.CENTER)
         val reviewControls = JPanel(FlowLayout(FlowLayout.LEFT, 8, 4)).apply { isOpaque = false }
-=======
-        val feedPanel = JPanel(BorderLayout(4, 4))
-        feedPanel.add(metrics, BorderLayout.NORTH)
-        feedPanel.add(JScrollPane(feedTable), BorderLayout.CENTER)
-        val feedHint = JLabel("Лента воспроизводит строки CSV постепенно. Скоринг рассчитан теми же правилами, что и C++.")
-        feedPanel.add(feedHint, BorderLayout.SOUTH)
-
-        val reviewPanel = JPanel(BorderLayout(4, 4))
-        reviewPanel.add(JScrollPane(reviewTable), BorderLayout.CENTER)
-        val reviewControls = JPanel(FlowLayout(FlowLayout.LEFT, 8, 4))
->>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
         reviewControls.add(approveButton)
         reviewControls.add(rejectButton)
         reviewControls.add(detailsButton)
         reviewPanel.add(reviewControls, BorderLayout.SOUTH)
 
-<<<<<<< HEAD
         val logPanel = JPanel(BorderLayout(6, 6)).apply {
             isOpaque = true
             background = Color.WHITE
@@ -261,20 +202,6 @@ class FraudGuardFrame : JFrame("FraudGuard — анти-фрод монитор�
         tabs.addTab("  Живая лента  ", feedPanel)
         tabs.addTab("  Очередь REVIEW  ", reviewPanel)
         val mainPanel = JPanel(BorderLayout(8, 8)).apply { isOpaque = false }
-=======
-        val logPanel = JPanel(BorderLayout(4, 4))
-        logPanel.border = BorderFactory.createTitledBorder("Журнал событий")
-        logArea.isEditable = false
-        logArea.lineWrap = true
-        logArea.wrapStyleWord = true
-        logPanel.add(JScrollPane(logArea), BorderLayout.CENTER)
-        logPanel.preferredSize = Dimension(1000, 135)
-
-        val tabs = JTabbedPane()
-        tabs.addTab("Живая лента", feedPanel)
-        tabs.addTab("Очередь REVIEW", reviewPanel)
-        val mainPanel = JPanel(BorderLayout(6, 6))
->>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
         mainPanel.add(tabs, BorderLayout.CENTER)
         mainPanel.add(logPanel, BorderLayout.SOUTH)
         add(mainPanel, BorderLayout.CENTER)
@@ -285,7 +212,6 @@ class FraudGuardFrame : JFrame("FraudGuard — анти-фрод монитор�
         detailsButton.isEnabled = false
     }
 
-<<<<<<< HEAD
     private fun polishUi() {
         listOf(startButton, pauseButton, resetButton, cppButton, approveButton, rejectButton, detailsButton).forEach { button ->
             button.font = button.font.deriveFont(Font.BOLD, 11f)
@@ -333,8 +259,6 @@ class FraudGuardFrame : JFrame("FraudGuard — анти-фрод монитор�
         statusLabel.font = statusLabel.font.deriveFont(Font.BOLD, 10f)
     }
 
-=======
->>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
     private fun pathRow(label: String, field: JTextField, buttonText: String, action: () -> Unit): JPanel {
         val panel = JPanel(BorderLayout(8, 0))
         val labelComponent = JLabel(label)
@@ -530,8 +454,11 @@ class FraudGuardFrame : JFrame("FraudGuard — анти-фрод монитор�
             refreshReviewQueue()
             return
         }
-        row.workflowStatus = if (approve) "APPROVED_BY_OPERATOR" else "REJECTED_BY_OPERATOR"
-        row.reviewedAt = OffsetDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+        val reviewedAt = OffsetDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+        if (!row.resolveReview(approve, reviewedAt)) {
+            refreshReviewQueue()
+            return
+        }
         appendLog("Оператор ${if (approve) "ОДОБРИЛ" else "ОТКЛОНИЛ"} ${row.scored.transaction.transactionId}; рекомендация движка была ${row.scored.decision}.")
         refreshFeedTable()
         refreshReviewQueue()
@@ -661,7 +588,6 @@ class FraudGuardFrame : JFrame("FraudGuard — анти-фрод монитор�
     }
 
     private fun metricLabel(text: String) = JLabel(text).apply {
-<<<<<<< HEAD
         isOpaque = true
         background = Color(0xF7, 0xF9, 0xFD)
         foreground = Color(0x35, 0x45, 0x60)
@@ -729,10 +655,6 @@ class FraudGuardFrame : JFrame("FraudGuard — анти-фрод монитор�
             label.border = EmptyBorder(3, 6, 3, 6)
             return label
         }
-=======
-        border = BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(5, 10, 5, 10))
-        font = font.deriveFont(font.size + 1f)
->>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
     }
 
     private class ReadOnlyTableModel(columns: Array<String>) : DefaultTableModel(columns, 0) {

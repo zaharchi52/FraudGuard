@@ -15,6 +15,7 @@ class CsvCodec {
     final field = StringBuffer();
     var inQuotes = false;
     var fieldWasQuoted = false;
+    var quoteClosed = false;
     var lineNumber = 1;
     var recordStartLine = 1;
     var index = 0;
@@ -23,12 +24,15 @@ class CsvCodec {
       fields.add(field.toString());
       field.clear();
       fieldWasQuoted = false;
+      quoteClosed = false;
     }
 
     void finishRecord() {
       finishField();
       if (!(fields.length == 1 && fields.first.trim().isEmpty)) {
-        records.add(CsvRecord(recordStartLine, List<String>.unmodifiable(fields)));
+        records.add(
+          CsvRecord(recordStartLine, List<String>.unmodifiable(fields)),
+        );
       }
       fields = <String>[];
       recordStartLine = lineNumber + 1;
@@ -43,12 +47,38 @@ class CsvCodec {
             index++;
           } else {
             inQuotes = false;
+            quoteClosed = true;
           }
         } else {
           field.write(character);
           if (character == '\n') lineNumber++;
         }
       } else {
+        if (quoteClosed) {
+          switch (character) {
+            case ',':
+              finishField();
+              break;
+            case '\n':
+              finishRecord();
+              lineNumber++;
+              recordStartLine = lineNumber;
+              break;
+            case ' ':
+            case '\t':
+              // Ignore whitespace following a closing quote, matching the C++ parser.
+              break;
+            default:
+              return CsvParseResult(
+                records: const [],
+                errorMessage:
+                    'После закрывающей кавычки ожидались разделитель или конец строки',
+                errorLine: lineNumber,
+              );
+          }
+          index++;
+          continue;
+        }
         switch (character) {
           case ',':
             finishField();
@@ -120,10 +150,13 @@ class CsvCodec {
         errors: [
           ProcessingError(
             sourceFile: sourceName,
-            lineNumber: (parsed.records.isEmpty ? 1 : parsed.records.first.lineNumber),
+            lineNumber: (parsed.records.isEmpty
+                ? 1
+                : parsed.records.first.lineNumber),
             transactionId: '',
             errorCode: 'FILE_SCHEMA',
-            message: 'Заголовок CSV не соответствует ожидаемой схеме из 8 колонок',
+            message:
+                'Заголовок CSV не соответствует ожидаемой схеме из 8 колонок',
           ),
         ],
         fileLoaded: false,
@@ -136,37 +169,44 @@ class CsvCodec {
       final values = record.fields.map((value) => value.trim()).toList();
       final transactionId = (values.isEmpty ? '' : values.first);
       if (values.length != transactionHeader.length) {
-        errors.add(ProcessingError(
-          sourceFile: sourceName,
-          lineNumber: record.lineNumber,
-          transactionId: transactionId,
-          errorCode: 'CSV_COLUMN_COUNT',
-          message: 'Число полей не соответствует ожидаемой схеме из 8 колонок',
-        ));
+        errors.add(
+          ProcessingError(
+            sourceFile: sourceName,
+            lineNumber: record.lineNumber,
+            transactionId: transactionId,
+            errorCode: 'CSV_COLUMN_COUNT',
+            message:
+                'Число полей не соответствует ожидаемой схеме из 8 колонок',
+          ),
+        );
         continue;
       }
 
       final validation = _validate(values, record.lineNumber);
       if (validation.transaction == null) {
-        errors.add(ProcessingError(
-          sourceFile: sourceName,
-          lineNumber: record.lineNumber,
-          transactionId: transactionId,
-          errorCode: validation.errorCode,
-          message: validation.message,
-        ));
+        errors.add(
+          ProcessingError(
+            sourceFile: sourceName,
+            lineNumber: record.lineNumber,
+            transactionId: transactionId,
+            errorCode: validation.errorCode,
+            message: validation.message,
+          ),
+        );
         continue;
       }
 
       final transaction = validation.transaction!;
       if (!seenIds.add(transaction.transactionId)) {
-        errors.add(ProcessingError(
-          sourceFile: sourceName,
-          lineNumber: record.lineNumber,
-          transactionId: transaction.transactionId,
-          errorCode: 'DUPLICATE_TRANSACTION_ID',
-          message: 'Идентификатор транзакции уже встречался',
-        ));
+        errors.add(
+          ProcessingError(
+            sourceFile: sourceName,
+            lineNumber: record.lineNumber,
+            transactionId: transaction.transactionId,
+            errorCode: 'DUPLICATE_TRANSACTION_ID',
+            message: 'Идентификатор транзакции уже встречался',
+          ),
+        );
         continue;
       }
       transactions.add(transaction);
@@ -232,19 +272,21 @@ class CsvCodec {
       );
     }
 
-    return _ValidationOutcome.success(Transaction(
-      transactionId: id,
-      clientId: client,
-      timestampText: timestampText,
-      amountText: amountText,
-      currency: currency,
-      country: country,
-      merchantCategory: category,
-      deviceId: device,
-      amount: amount,
-      timestamp: timestamp.toUtc(),
-      lineNumber: lineNumber,
-    ));
+    return _ValidationOutcome.success(
+      Transaction(
+        transactionId: id,
+        clientId: client,
+        timestampText: timestampText,
+        amountText: amountText,
+        currency: currency,
+        country: country,
+        merchantCategory: category,
+        deviceId: device,
+        amount: amount,
+        timestamp: timestamp.toUtc(),
+        lineNumber: lineNumber,
+      ),
+    );
   }
 
   static bool _sameHeader(List<String> actual, List<String> expected) {
@@ -271,10 +313,10 @@ class CsvCodec {
 
 class _ValidationOutcome {
   const _ValidationOutcome.success(this.transaction)
-      : errorCode = '',
-        message = '';
+    : errorCode = '',
+      message = '';
   const _ValidationOutcome.error(this.errorCode, this.message)
-      : transaction = null;
+    : transaction = null;
 
   final Transaction? transaction;
   final String errorCode;

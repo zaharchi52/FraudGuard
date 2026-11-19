@@ -1,0 +1,16 @@
+FraudGuard documentation and test-framework review patch
+
+Apply this ZIP by extracting it into the root of the existing FraudGuard repository
+(the directory that contains .git, README.md, cpp, kotlin, dart, and docs).
+Allow the included files to replace existing files.
+
+This patch:
+- simplifies the three primary UML diagrams for a student-level project;
+- rewrites docs/architecture.md to match the actual source-code layout;
+- explains Google Test vs CTest, JUnit 5, and Flutter Test;
+- cleans remaining Git conflict markers in VISION.md, docs/decision-log.md,
+  docs/uml/README.md, and kotlin/README.md;
+- adds optional Google Test download support through CMake FetchContent;
+- updates the one-command test script with the -FetchGoogleTest switch.
+
+After extraction, inspect git diff before committing.

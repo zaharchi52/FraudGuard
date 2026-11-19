@@ -78,10 +78,10 @@ enum ProfileStatus { coldStart, limitedHistory, ready }
 
 extension ProfileStatusLabel on ProfileStatus {
   String get csvValue => switch (this) {
-        ProfileStatus.coldStart => 'COLD_START',
-        ProfileStatus.limitedHistory => 'LIMITED_HISTORY',
-        ProfileStatus.ready => 'READY',
-      };
+    ProfileStatus.coldStart => 'COLD_START',
+    ProfileStatus.limitedHistory => 'LIMITED_HISTORY',
+    ProfileStatus.ready => 'READY',
+  };
 }
 
 class ClientProfile {
@@ -194,11 +194,11 @@ class AnalysisBatch {
 
 class LiveTransactionRow {
   LiveTransactionRow(this.scored)
-      : workflowStatus = switch (scored.decision) {
-          'APPROVE' => 'AUTO_APPROVED',
-          'BLOCK' => 'AUTO_BLOCKED',
-          _ => 'PENDING_REVIEW',
-        };
+    : workflowStatus = switch (scored.decision) {
+        'APPROVE' => 'AUTO_APPROVED',
+        'BLOCK' => 'AUTO_BLOCKED',
+        _ => 'PENDING_REVIEW',
+      };
 
   final ScoredTransaction scored;
   String workflowStatus;
@@ -206,5 +206,14 @@ class LiveTransactionRow {
 
   bool get isPending => workflowStatus == 'PENDING_REVIEW';
   bool get isBlocked =>
-      workflowStatus == 'AUTO_BLOCKED' || workflowStatus == 'REJECTED_BY_OPERATOR';
+      workflowStatus == 'AUTO_BLOCKED' ||
+      workflowStatus == 'REJECTED_BY_OPERATOR';
+
+  /// Applies an operator decision once, and only to a transaction awaiting review.
+  bool resolveReview({required bool approve, required DateTime reviewedAt}) {
+    if (!isPending) return false;
+    workflowStatus = approve ? 'APPROVED_BY_OPERATOR' : 'REJECTED_BY_OPERATOR';
+    this.reviewedAt = reviewedAt.toUtc().toIso8601String();
+    return true;
+  }
 }

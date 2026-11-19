@@ -1,164 +1,62 @@
-@startuml FraudGuard_Class_Diagram
+@startuml FraudGuard_Class
 skinparam classAttributeIconSize 0
 skinparam shadowing false
 hide empty members
 
-package "Доменная модель" {
-  class Transaction {
-    +transactionId: String
-    +clientId: String
-    +timestamp: Instant
-    +amountMinor: Long
-    +currency: String
-    +country: String
-    +merchantCategory: String
-    +deviceId: String
-  }
-
-  enum ProfileStatus {
-    COLD_START
-    LIMITED_HISTORY
-    READY
-  }
-
-  enum Decision {
-    APPROVE
-    REVIEW
-    BLOCK
-  }
-
-  class ClientProfile {
-    +clientId: String
-    +currency: String
-    +transactionCount: Int
-    +medianAmountMinor: Long
-    +p95AmountMinor: Long
-    +countries: Set<String>
-    +devices: Set<String>
-    +categories: Set<String>
-    +status: ProfileStatus
-  }
-
-  class RiskFactor {
-    +code: String
-    +points: Int
-    +description: String
-  }
-
-  class TransactionResult {
-    +transaction: Transaction
-    +riskScore: Int
-    +decision: Decision
-    +riskFactors: List<RiskFactor>
-    +profileStatus: ProfileStatus
-    +processingStatus: String
-  }
-
-  class ValidationError {
-    +sourceFile: String
-    +lineNumber: Int
-    +transactionId: String?
-    +errorCode: String
-    +message: String
-  }
-
-  class BatchReport {
-    +results: List<TransactionResult>
-    +errors: List<ValidationError>
-    +inputRows: Int
-    +validRows: Int
-  }
-
-  class AppConfig {
-    +minHistorySize: Int = 5
-    +velocityWindowMinutes: Int = 10
-    +reviewThreshold: Int = 30
-    +blockThreshold: Int = 60
-  }
+class Transaction {
+  transactionId: String
+  clientId: String
+  amount: Decimal
+  currency: String
+  timestamp: DateTime
 }
 
-package "Прикладная и доменная логика" {
-  class Application {
-    +run(args: String[]): Int
-  }
-  class CsvReader {
-    +read(path: Path): List<CsvRecord>
-  }
-  class TransactionValidator {
-    +validate(record: CsvRecord): ValidationResult
-  }
-  class ProfileBuilder {
-    +build(history: List<Transaction>): Map<ProfileKey, ClientProfile>
-  }
-  class BatchContext {
-    +validAttempts: List<Transaction>
-    +countInWindow(tx: Transaction, minutes: Int): Int
-  }
-  interface FraudRule {
-    +evaluate(tx: Transaction, profile: ClientProfile?, context: BatchContext): RiskFactor?
-  }
-  class RuleEngine {
-    +evaluate(tx: Transaction, profile: ClientProfile?, context: BatchContext): List<RiskFactor>
-  }
-  class RiskScorer {
-    +score(factors: List<RiskFactor>): Int
-  }
-  class DecisionEngine {
-    +decide(score: Int): Decision
-  }
-  class FraudDetectionService {
-    +process(history: List<Transaction>, incoming: List<Transaction>): BatchReport
-  }
-  class CsvReportWriter {
-    +write(report: BatchReport, outputPaths: OutputPaths): void
-  }
+class ClientProfile {
+  transactionCount: Int
+  medianAmount: Decimal
+  p95Amount: Decimal
+  knownCountries: Set
+  knownDevices: Set
 }
 
-class "HighAmountRule" as HighAmountRule
-class "UnusualAmountRule" as UnusualAmountRule
-class "HighVelocityRule" as HighVelocityRule
-class "NewCountryRule" as NewCountryRule
-class "NewDeviceRule" as NewDeviceRule
-class "NewCategoryRule" as NewCategoryRule
+class RiskFactor {
+  code: String
+  points: Int
+}
 
-FraudRule <|.. HighAmountRule
-FraudRule <|.. UnusualAmountRule
-FraudRule <|.. HighVelocityRule
-FraudRule <|.. NewCountryRule
-FraudRule <|.. NewDeviceRule
-FraudRule <|.. NewCategoryRule
+class ScoredTransaction {
+  riskScore: Int
+  engineDecision: String
+  factors: List
+}
 
-TransactionResult *-- Transaction
-TransactionResult o-- "0..*" RiskFactor
-ClientProfile --> ProfileStatus
-TransactionResult --> Decision
-TransactionResult --> ProfileStatus
-BatchReport o-- "0..*" TransactionResult
-BatchReport o-- "0..*" ValidationError
-RuleEngine o-- "6" FraudRule
-ProfileBuilder ..> ClientProfile : создаёт
-TransactionValidator ..> Transaction : валидирует
-FraudDetectionService --> CsvReader : через Application
-FraudDetectionService --> TransactionValidator
-FraudDetectionService --> ProfileBuilder
-FraudDetectionService --> BatchContext
-FraudDetectionService --> RuleEngine
-FraudDetectionService --> RiskScorer
-FraudDetectionService --> DecisionEngine
-FraudDetectionService --> BatchReport : собирает
-Application --> FraudDetectionService
-Application --> CsvReader
-Application --> CsvReportWriter
-CsvReportWriter ..> BatchReport : записывает
-FraudDetectionService ..> AppConfig : использует настройки
-BatchContext --> Transaction : считает попытки
+class ScoringEngine {
+  buildProfile(history)
+  evaluateRisk(transaction, profile)
+  decisionForScore(score)
+}
 
-note right of RiskScorer
-score = min(100, sum(points))
-end note
-note right of DecisionEngine
-0..29: APPROVE
-30..59: REVIEW
-60..100: BLOCK
-end note
+class CsvCodec {
+  readTransactions(file)
+}
+
+class ReportWriter {
+  writeResults()
+  writeAlerts()
+  writeErrors()
+}
+
+class LiveTransactionRow {
+  workflowStatus: String
+  resolveReview(approve)
+}
+
+ScoredTransaction *-- Transaction
+ScoredTransaction o-- "0..*" RiskFactor
+ScoringEngine --> ClientProfile : builds
+ScoringEngine --> ScoredTransaction : creates
+CsvCodec --> Transaction : reads
+ReportWriter --> ScoredTransaction : saves
+LiveTransactionRow --> ScoredTransaction : stores
+
 @enduml

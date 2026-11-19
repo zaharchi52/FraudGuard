@@ -4,7 +4,6 @@
     {
       "label": "FraudGuard: Run Kotlin GUI",
       "type": "shell",
-<<<<<<< HEAD
       "command": ".\\gradlew.bat",
       "args": [
         "run"
@@ -17,18 +16,10 @@
         "reveal": "always",
         "panel": "dedicated"
       }
-=======
-      "command": "gradle",
-      "args": ["run"],
-      "options": { "cwd": "${workspaceFolder}/kotlin" },
-      "problemMatcher": [],
-      "presentation": { "reveal": "always", "panel": "dedicated" }
->>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
     },
     {
       "label": "FraudGuard: Test Kotlin engine",
       "type": "shell",
-<<<<<<< HEAD
       "command": ".\\gradlew.bat",
       "args": [
         "test"
@@ -126,13 +117,19 @@
         "reveal": "always",
         "panel": "dedicated"
       }
-=======
-      "command": "gradle",
-      "args": ["test"],
-      "options": { "cwd": "${workspaceFolder}/kotlin" },
+    },
+    {
+      "label": "FraudGuard: Run all tests",
+      "type": "shell",
+      "command": ".\\scripts\\run-all-tests.ps1",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
       "problemMatcher": [],
-      "presentation": { "reveal": "always", "panel": "dedicated" }
->>>>>>> 1d3001cacd41e209267ec19f5bcb4072cd6626dd
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
     }
   ]
 }

@@ -131,3 +131,37 @@ TEST(RulesTest, ProfileRulesAreDisabledForLimitedHistory) {
 TEST(ScoringTest, ScoreIsCappedAtOneHundred) {
     EXPECT_EQ(scoreForFactors({{"A", 80}, {"B", 40}}), 100);
 }
+
+
+TEST(RulesTest, AmountThresholdsUseInclusiveHighAmountAndStrictP95) {
+    const auto profile = buildProfile(readyHistory(), "C1", "EUR");
+    const auto atP95 = evaluateRisk(makeTx("P95", 40), profile, 1);
+    EXPECT_TRUE(atP95.empty());
+    const auto atFiveTimesMedian = evaluateRisk(makeTx("HIGH", 150), profile, 1);
+    ASSERT_EQ(atFiveTimesMedian.size(), 1u);
+    EXPECT_EQ(atFiveTimesMedian[0].code, "HIGH_AMOUNT");
+}
+
+TEST(ProfileTest, ProfileIsScopedByClientAndCurrency) {
+    const auto history = readyHistory();
+    EXPECT_EQ(buildProfile(history, "C1", "USD").status, ProfileStatus::ColdStart);
+    EXPECT_EQ(buildProfile(history, "OTHER", "EUR").status, ProfileStatus::ColdStart);
+}
+
+TEST(ValidationTest, AcceptsLeapDayAndRejectsInvalidOffset) {
+    std::int64_t milliseconds = 0;
+    EXPECT_TRUE(parseIso8601("2024-02-29T10:00:00Z", milliseconds));
+    EXPECT_FALSE(parseIso8601("2026-10-28T10:00:00+25:00", milliseconds));
+    EXPECT_FALSE(parseIso8601("2026-10-28T10:00:00+02:99", milliseconds));
+}
+
+
+TEST(StatisticsTest, EmptyCollectionsAreRejected) {
+    EXPECT_THROW(median({}), std::invalid_argument);
+    EXPECT_THROW(percentile95NearestRank({}), std::invalid_argument);
+}
+
+TEST(DecisionTest, RejectsScoresOutsideTheSupportedRange) {
+    EXPECT_THROW(decisionForScore(-1), std::out_of_range);
+    EXPECT_THROW(decisionForScore(101), std::out_of_range);
+}
